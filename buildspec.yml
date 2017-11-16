@@ -1,14 +1,14 @@
-version: 0.2
-
-phases:
-  install:
-    commands:
-      - npm install
-      - aws cloudformation package --template-file cloudformation.yaml --s3-bucket bin-master --output-template-file samTemplate.yaml
-  build:
-    commands:
-      - npm run build
+---
 artifacts:
   files:
     - artifact/*.zip
     - samTemplate.yaml
+phases:
+  build:
+    commands:
+      - "npm run build"
+  install:
+    commands:
+      - "npm install"
+      - "aws cloudformation package --template-file cloudformation.yaml --s3-bucket bin-master --output-template-file samTemplate.yaml"
+version: 0.2
