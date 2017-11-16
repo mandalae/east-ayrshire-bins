@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "mkdir artifact && zip -r artifact/bin-master.zip .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
