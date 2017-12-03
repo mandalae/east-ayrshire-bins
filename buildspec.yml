@@ -6,9 +6,10 @@ artifacts:
 phases:
   build:
     commands:
-      - "npm run build"
-      - "rm -rf node_modules && rm -rf test"
+      - "npm test"
+      - "rm -rf node_modules && rm -rf test && rm -rf .git"
       - "npm install --production"
+      - "npm run build"
   install:
     commands:
       - "npm install"
