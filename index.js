@@ -1,7 +1,7 @@
 'use strict';
 const Alexa = require('alexa-sdk');
 
-const findEvent = require('./findEvent')
+const findEventAPI = require('./src/findEventAPI')
 
 const handlers = {
     'LaunchRequest': function() {
@@ -9,7 +9,7 @@ const handlers = {
     },
     'WhichBinTomorrow': function() {
         console.log('Running which bin tomorrow');
-        findEvent(true).then(result => {
+        findEventAPI('tomorrow').then(result => {
             this.emit(':tell', result);
         }).catch(err => {
             this.emit(':tell', err);
@@ -17,7 +17,7 @@ const handlers = {
     },
     'NextBin': function(){
         console.log('Running next bin');
-        findEvent(false, true).then(result => {
+        findEventAPI('nextBin').then(result => {
             this.emit(':tell', result);
         }).catch(err => {
             this.emit(':tell', err);
@@ -26,7 +26,7 @@ const handlers = {
     'WhenIsBin': function() {
         const binType = this.event.request.intent.slots.binType.value;
         console.log('Running when is bin:', binType);
-        findEvent(false, false, binType).then(result => {
+        findEventAPI('binType', binType).then(result => {
             this.emit(':tell', result);
         }).catch(err => {
             this.emit(':tell', err);

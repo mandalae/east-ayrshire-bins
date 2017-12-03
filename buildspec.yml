@@ -7,6 +7,8 @@ phases:
   build:
     commands:
       - "npm run build"
+      - "rm -rf node_modules && rm -rf test"
+      - "npm install --production"
   install:
     commands:
       - "npm install"
