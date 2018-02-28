@@ -2,12 +2,15 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Finds the next bin for collection
 Resources:
-  TimeFunction:
+  BinMasterFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: s3://bin-master/alexa_skill.zip
       Handler: index.handler
       Runtime: nodejs6.10
+      AutoPublishAlias: live
+      DeploymentPreference:
+        Type: Canary10Percent5Minutes
       Events:
         AlexaSkillEvent:
           Type: AlexaSkill

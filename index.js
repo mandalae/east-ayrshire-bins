@@ -5,36 +5,60 @@ const findEventAPI = require('./src/findEventAPI')
 
 const handlers = {
     'LaunchRequest': function() {
-        this.emit('GetBuildStatus');
+        this.emit('NextBin');
     },
     'WhichBinTomorrow': function() {
         console.log('Running which bin tomorrow');
-        findEventAPI('tomorrow').then(result => {
+        findEventAPI(this, 'tomorrow').then(result => {
             this.emit(':tell', result);
         }).catch(err => {
-            this.emit(':tell', err);
+            if (typeof err != Object){
+                this.emit(':tellWithPermissionCard', err.tellWithPermissionCard, err.permissions);
+            } else {
+                console.log(err);
+                this.emit(':tell', err);
+            }
         });
     },
     'NextBin': function(){
         console.log('Running next bin');
-        findEventAPI('nextBin').then(result => {
+        findEventAPI(this, 'nextBin').then(result => {
             this.emit(':tell', result);
         }).catch(err => {
-            this.emit(':tell', err);
+            if (typeof err == Object){
+                this.emit(':tellWithPermissionCard', err.tellWithPermissionCard, err.permissions);
+            } else {
+                console.log(err);
+                this.emit(':tell', err);
+            }
         });
     },
     'WhenIsBin': function() {
         const binType = this.event.request.intent.slots.binType.value;
         console.log('Running when is bin:', binType);
-        findEventAPI('binType', binType).then(result => {
+        findEventAPI(this, 'binType', binType).then(result => {
             this.emit(':tell', result);
         }).catch(err => {
-            this.emit(':tell', err);
+            if (typeof err == Object){
+                this.emit(':tellWithPermissionCard', err.tellWithPermissionCard, err.permissions);
+            } else {
+                console.log(err);
+                this.emit(':tell', err);
+            }
         });
 
     },
     'Unhandled': function() {
-        this.emit(':tell', 'Something went wrong, try again');
+        this.emit(':tell', "I didn't understand that request, please try again.");
+    },
+    'AMAZON.HelpIntent': function () {
+      // Handler for built-in HelpIntent
+    },
+    'AMAZON.StopIntent': function () {
+      // Handler for the built-in StopIntent
+    },
+    'AMAZON.CancelIntent': function () {
+      // Handler for the built-in CancelIntent
     }
 }
 
