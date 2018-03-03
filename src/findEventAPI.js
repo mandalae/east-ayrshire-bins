@@ -109,11 +109,14 @@ module.exports = (self, action, binType, inputDate) => {
             }
             let houseNumber = addressResponse.address.addressLine1.split(' ')[0];
             if (isNaN(houseNumber)){
-                houseNumber = addressResponse.address.addressLine1.split(',')[0];
-                if (addressResponse.address.addressLine1.indexOf(',') == -1 || houseNumber.length < 2){
-                    reject("Unfortunately your address line 1 doesn't appear to have a house number or house name in it. This skill requires that to find the correct information");
-                    return;
+                if (addressResponse.address.addressLine1.indexOf(',') > -1){
+                    houseNumber = addressResponse.address.addressLine1.split(',')[0];
                 }
+            }
+
+            if (!houseNumber){
+                reject("Unfortunately your address line 1 doesn't appear to have a house number or house name in it. This skill requires that to find the correct information.");
+                return;
             }
 
             const options = {

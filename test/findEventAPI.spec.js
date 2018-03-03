@@ -96,14 +96,14 @@ describe('Find Event API', () => {
     });
 
     it('should return an error if the address is unparsable', done => {
-        const date = new Date("2017-12-14T00:00:00")
-        const restAPICallResult = '{ "2017-12-15T00:00:00": "food bin and red box", "2017-12-18T00:00:00": "black box" }'
+        const date = new Date("2017-12-14T00:00:00");
+        const restAPICallResult = '{ "2017-12-15T00:00:00": "food bin and red box", "2017-12-18T00:00:00": "black box" }';
 
         const requestStub = (url, callback) => {
             callback(false, null, restAPICallResult)
         }
 
-        findEventAPI = proxyquire('../src/findEventAPI', { 'request': requestStub, '../lib/AlexaDeviceAddressClient': getAlexaClientStub('KA1 4SF', 'Some street 5') });
+        findEventAPI = proxyquire('../src/findEventAPI', { 'request': requestStub, '../lib/AlexaDeviceAddressClient': getAlexaClientStub('KA1 4SF', '') });
 
         const findEventPromise = findEventAPI(alexa, 'tomorrow', null, date);
         expect(findEventPromise).to.be.rejectedWith("Unfortunately your address line 1 doesn't appear to have a house number or house name in it. This skill requires that to find the correct information").then(() => {
@@ -111,7 +111,64 @@ describe('Find Event API', () => {
         });
     });
 
-    it('should return an error if the address is unparsable', done => {
+    it('should call the api url with the correct information when the address has a house name', done => {
+        const date = new Date("2017-12-14T00:00:00");
+        const restAPICallResult = '{ "2017-12-15T00:00:00": "food bin and red box", "2017-12-18T00:00:00": "black box" }'
+
+        let apiUrl;
+        const requestStub = (url, callback) => {
+            apiUrl = url;
+            callback(false, null, restAPICallResult)
+        }
+
+        findEventAPI = proxyquire('../src/findEventAPI', { 'request': requestStub, '../lib/AlexaDeviceAddressClient': getAlexaClientStub('KA1 4SF', 'Springside, Halket Raod, Lugton') });
+
+        const findEventPromise = findEventAPI(alexa, 'tomorrow', null, date);
+        expect(findEventPromise).to.be.fulfilled.then(data => {
+            expect(apiUrl.url).to.equal('https://www.east-ayrshire.gov.uk/api/Recycling/Postcode/ka14sf/Springside/2017-12-14/2018-12-14');
+            done();
+        });
+    });
+
+    it('should call the api url with the correct information when the address has a house name that is not comma delimited', done => {
+        const date = new Date("2017-12-14T00:00:00");
+        const restAPICallResult = '{ "2017-12-15T00:00:00": "food bin and red box", "2017-12-18T00:00:00": "black box" }'
+
+        let apiUrl;
+        const requestStub = (url, callback) => {
+            apiUrl = url;
+            callback(false, null, restAPICallResult)
+        }
+
+        findEventAPI = proxyquire('../src/findEventAPI', { 'request': requestStub, '../lib/AlexaDeviceAddressClient': getAlexaClientStub('KA1 4SF', 'HOLMS HOLMS FARM ROAD') });
+
+        const findEventPromise = findEventAPI(alexa, 'tomorrow', null, date);
+        expect(findEventPromise).to.be.fulfilled.then(data => {
+            expect(apiUrl.url).to.equal('https://www.east-ayrshire.gov.uk/api/Recycling/Postcode/ka14sf/HOLMS/2017-12-14/2018-12-14');
+            done();
+        });
+    });
+
+    it('should call the api url with the correct information when the address has a house number', done => {
+        const date = new Date("2017-12-14T00:00:00");
+        const restAPICallResult = '{ "2017-12-15T00:00:00": "food bin and red box", "2017-12-18T00:00:00": "black box" }'
+
+        let apiUrl;
+        const requestStub = (url, callback) => {
+            apiUrl = url;
+            callback(false, null, restAPICallResult)
+        }
+
+        findEventAPI = proxyquire('../src/findEventAPI', { 'request': requestStub, '../lib/AlexaDeviceAddressClient': getAlexaClientStub('KA1 4SF', '5 Halket Raod, Lugton') });
+
+        const findEventPromise = findEventAPI(alexa, 'tomorrow', null, date);
+        expect(findEventPromise).to.be.fulfilled.then(data => {
+            expect(apiUrl.url).to.equal('https://www.east-ayrshire.gov.uk/api/Recycling/Postcode/ka14sf/5/2017-12-14/2018-12-14');
+            done();
+        });
+    });
+
+    it('should return a proper finding if the address has a house name rather than a number', done => {
         const date = new Date("2017-12-14T00:00:00")
         const restAPICallResult = '{ "2017-12-15T00:00:00": "food bin and red box", "2017-12-18T00:00:00": "black box" }'
 
@@ -119,7 +176,7 @@ describe('Find Event API', () => {
             callback(false, null, restAPICallResult)
         }
 
-        findEventAPI = proxyquire('../src/findEventAPI', { 'request': requestStub, '../lib/AlexaDeviceAddressClient': getAlexaClientStub('KA1 4SF', 'Some house, Some street 5') });
+        findEventAPI = proxyquire('../src/findEventAPI', { 'request': requestStub, '../lib/AlexaDeviceAddressClient': getAlexaClientStub('KA1 4SF', 'Springside, Halket Raod, Lugton') });
 
         const findEventPromise = findEventAPI(alexa, 'tomorrow', null, date);
         expect(findEventPromise).to.be.fulfilled.then(data => {
@@ -312,7 +369,6 @@ describe('Find Event API', () => {
 
         const findEventPromise = findEventAPI(alexa, 'binType', 'food bin', date);
         expect(findEventPromise).to.be.fulfilled.then(data => {
-
             expect(data).to.equal('Next collection of the food bin is: food bin and red box on Friday<say-as interpret-as="date">????1215</say-as>');
             done();
         });
