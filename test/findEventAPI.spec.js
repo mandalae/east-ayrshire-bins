@@ -106,7 +106,24 @@ describe('Find Event API', () => {
         findEventAPI = proxyquire('../src/findEventAPI', { 'request': requestStub, '../lib/AlexaDeviceAddressClient': getAlexaClientStub('KA1 4SF', 'Some street 5') });
 
         const findEventPromise = findEventAPI(alexa, 'tomorrow', null, date);
-        expect(findEventPromise).to.be.rejectedWith("Unfortunately your address line 1 doesn't appear to have a house number in it. This skill requires that to find the correct information").then(() => {
+        expect(findEventPromise).to.be.rejectedWith("Unfortunately your address line 1 doesn't appear to have a house number or house name in it. This skill requires that to find the correct information").then(() => {
+            done();
+        });
+    });
+
+    it('should return an error if the address is unparsable', done => {
+        const date = new Date("2017-12-14T00:00:00")
+        const restAPICallResult = '{ "2017-12-15T00:00:00": "food bin and red box", "2017-12-18T00:00:00": "black box" }'
+
+        const requestStub = (url, callback) => {
+            callback(false, null, restAPICallResult)
+        }
+
+        findEventAPI = proxyquire('../src/findEventAPI', { 'request': requestStub, '../lib/AlexaDeviceAddressClient': getAlexaClientStub('KA1 4SF', 'Some house, Some street 5') });
+
+        const findEventPromise = findEventAPI(alexa, 'tomorrow', null, date);
+        expect(findEventPromise).to.be.fulfilled.then(data => {
+            expect(data).to.equal("Tomorrow's collection is food bin and red box");
             done();
         });
     });

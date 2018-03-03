@@ -12,7 +12,7 @@ const handlers = {
         findEventAPI(this, 'tomorrow').then(result => {
             this.emit(':tell', result);
         }).catch(err => {
-            if (typeof err != Object){
+            if (typeof err == "object"){
                 this.emit(':tellWithPermissionCard', err.tellWithPermissionCard, err.permissions);
             } else {
                 console.log(err);
@@ -25,7 +25,7 @@ const handlers = {
         findEventAPI(this, 'nextBin').then(result => {
             this.emit(':tell', result);
         }).catch(err => {
-            if (typeof err == Object){
+            if (typeof err == "object"){
                 this.emit(':tellWithPermissionCard', err.tellWithPermissionCard, err.permissions);
             } else {
                 console.log(err);
@@ -39,7 +39,7 @@ const handlers = {
         findEventAPI(this, 'binType', binType).then(result => {
             this.emit(':tell', result);
         }).catch(err => {
-            if (typeof err == Object){
+            if (typeof err == "object"){
                 this.emit(':tellWithPermissionCard', err.tellWithPermissionCard, err.permissions);
             } else {
                 console.log(err);

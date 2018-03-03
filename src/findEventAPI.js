@@ -107,10 +107,13 @@ module.exports = (self, action, binType, inputDate) => {
                 reject("Unfortunately your postcode doesn't appear to be a valid East Ayrshire postcode. If you believe this to be a mistake, please check and try again.");
                 return;
             }
-            const houseNumber = addressResponse.address.addressLine1.split(' ')[0];
+            let houseNumber = addressResponse.address.addressLine1.split(' ')[0];
             if (isNaN(houseNumber)){
-                reject("Unfortunately your address line 1 doesn't appear to have a house number in it. This skill requires that to find the correct information");
-                return;
+                houseNumber = addressResponse.address.addressLine1.split(',')[0];
+                if (addressResponse.address.addressLine1.indexOf(',') == -1 || houseNumber.length < 2){
+                    reject("Unfortunately your address line 1 doesn't appear to have a house number or house name in it. This skill requires that to find the correct information");
+                    return;
+                }
             }
 
             const options = {
