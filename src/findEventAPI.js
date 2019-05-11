@@ -2,35 +2,37 @@ const request = require('request');
 const AlexaDeviceAddressClient = require('../lib/AlexaDeviceAddressClient');
 
 const binTypes = {
-    "red": "red box",
-    "red bin": "red box",
-    "red box": "red box",
-    "plastic": "red box",
-    "plastics": "red box",
+    "red": "trolley and food bin",
+    "red bin": "trolley and food bin",
+    "red box": "trolley and food bin",
+    "plastic": "trolley and food bin",
+    "plastics": "trolley and food bin",
 
     "green": "residual waste bin",
     "green bin": "residual waste bin",
     "residual waste": "residual waste bin",
     "residual": "residual waste bin",
 
-    "black": "black box",
-    "black box": "black box",
-    "glass": "black box",
-    "glass bin": "black box",
-    "metal": "black box",
-    "metal bin": "black box",
+    "black": "trolley and food bin",
+    "black box": "trolley and food bin",
+    "glass": "trolley and food bin",
+    "glass bin": "trolley and food bin",
+    "metal": "trolley and food bin",
+    "metal bin": "trolley and food bin",
 
-    "blue bin": "blue bin",
-    "blue": "blue bin",
-    "paper": "blue bin",
+    "blue bin": "trolley and food bin",
+    "blue": "trolley and food bin",
+    "paper": "trolley and food bin",
 
     "garden": "brown bin",
     "garden waste": "brown bin",
     "brown bin": "brown bin",
     "brown": "brown bin",
 
-    "food": "food bin",
-    "food bin": "food bin"
+    "food": "trolley and food bin",
+    "food bin": "trolley and food bin",
+
+    "trolley": "trolley and food bin"
 };
 
 const eastAyrshirePostcodes = [

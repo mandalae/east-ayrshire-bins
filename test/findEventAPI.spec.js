@@ -359,7 +359,7 @@ describe('Find Event API', () => {
 
     it('should find the next collection of type', done => {
         const date = new Date("2017-12-03T00:00:00")
-        const restAPICallResult = '{ "2017-12-15T00:00:00": "food bin and red box", "2017-12-18T00:00:00": "black box" }'
+        const restAPICallResult = '{ "2017-12-15T00:00:00": "trolley and food bin", "2017-12-18T00:00:00": "trolley and food bin" }'
 
         const requestStub = (url, callback) => {
             callback(false, null, restAPICallResult)
@@ -369,14 +369,14 @@ describe('Find Event API', () => {
 
         const findEventPromise = findEventAPI(alexa, 'binType', 'food bin', date);
         expect(findEventPromise).to.be.fulfilled.then(data => {
-            expect(data).to.equal('Next collection of the food bin is: food bin and red box on Friday<say-as interpret-as="date">????1215</say-as>');
+            expect(data).to.equal('Next collection of the food bin is: trolley and food bin on Friday<say-as interpret-as="date">????1215</say-as>');
             done();
         });
     });
 
     it('should find the next collection of type, black box', done => {
         const date = new Date("2017-12-03T00:00:00")
-        const restAPICallResult = '{ "2017-12-15T00:00:00": "food bin and red box", "2017-12-18T00:00:00": "black box" }'
+        const restAPICallResult = '{ "2017-12-15T00:00:00": "food bin and red box", "2017-12-18T00:00:00": "trolley and food bin" }'
 
         const requestStub = (url, callback) => {
             callback(false, null, restAPICallResult)
@@ -387,7 +387,7 @@ describe('Find Event API', () => {
         const findEventPromise = findEventAPI(alexa, 'binType', 'black box', date);
         expect(findEventPromise).to.be.fulfilled.then(data => {
 
-            expect(data).to.equal('Next collection of the black box is: black box on Monday<say-as interpret-as="date">????1218</say-as>');
+            expect(data).to.equal('Next collection of the black box is: trolley and food bin on Monday<say-as interpret-as="date">????1218</say-as>');
             done();
         });
     });
